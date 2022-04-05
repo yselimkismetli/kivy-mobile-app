@@ -8,6 +8,10 @@ This application was developed with Kivy, KivyMD and SQLite for to follow sports
 
 <img src="https://yavuzselimkismetli.com/kma/k_2.jpg" alt="Overview" style="width: 40%; height: 40%"/>
 
+In the sports page, you can follow about teams, points, etc. News page is slidable and list of the news from database.
+
+> Every data is fetch from database.
+
 ## Variables of table
 
 - .."Name" : Name of the team/player.
@@ -28,6 +32,7 @@ If you want to manage data on the screens; for the screens `..Screen(Screen) (et
 - MDNavigationDrawer
 - MDList
 - MDCard
+- MDIcons
 
 ## Requirements
 
