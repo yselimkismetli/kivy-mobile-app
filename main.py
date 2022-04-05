@@ -6,6 +6,10 @@ from kivy.properties import ListProperty, StringProperty
 from kivy.uix.boxlayout import BoxLayout
 from kivymd.uix.label import MDLabel
 from kivymd.uix.card import MDCard
+import os.path
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+db_path = os.path.join(BASE_DIR, "test.db")
 
 kv = '''
 
@@ -44,42 +48,42 @@ BoxLayout:
             ScrollView:
                 MDList:
                     OneLineIconListItem:
-                        text: "Ana Sayfa"
+                        text: "Home Page"
                         on_press:
                             nav_drawer.set_state("close")
                             screen_manager.current = "home"
                         IconLeftWidget:
                             icon: "home-outline"
                     OneLineIconListItem:
-                        text: "Futbol"
+                        text: "Football"
                         on_press:
                             nav_drawer.set_state("close")
                             screen_manager.current = "fb"
                         IconLeftWidget:
                             icon: "soccer"
                     OneLineIconListItem:
-                        text: "Basketbol"
+                        text: "Basketball"
                         on_press:
                             nav_drawer.set_state("close")
                             screen_manager.current = "bb"
                         IconLeftWidget:
                             icon: "basketball"
                     OneLineIconListItem:
-                        text: "Voleybol"
+                        text: "Volleyball"
                         on_press:
                             nav_drawer.set_state("close")
                             screen_manager.current = "vb"
                         IconLeftWidget:
                             icon: "volleyball"
                     OneLineIconListItem:
-                        text: "Tenis"
+                        text: "Tennis"
                         on_press:
                             nav_drawer.set_state("close")
                             screen_manager.current = "ts"
                         IconLeftWidget:
                             icon: "tennis"
                     OneLineIconListItem:
-                        text: "Haberler"
+                        text: "News"
                         on_press:
                             nav_drawer.set_state("close")
                             screen_manager.current = "news"
@@ -95,16 +99,13 @@ BoxLayout:
         pos_hint: {"center_x": .5, "center_y": .5}
 
         MDLabel:
-            text: "Sportable uygulaması futbol, basketbol, voleybol ve tenis gibi sporlar hakkında puan durumu takip edebileceğiniz, aynı zamanda spor haberlerini okuyabileceğiniz mobil uygulamadır."
+            text: "Sportable application is a mobile application where you can follow the standings about sports such as football, basketball, volleyball and tennis, as well as read sports news."
             theme_text_color: "Secondary"
             size_hint_y: None
             height: "50dp"
 
         MDSeparator:
             height: "1dp"
-
-        MDLabel:
-            text: "Uygulamayı geliştirenler: Yavuz Selim KISMETLİ - Birhat KAYA"
 
 <BBData>:
     canvas:
@@ -145,22 +146,22 @@ BoxLayout:
             size_hint_y: None
             height: 28
             Label:
-                text: 'Sıra'
+                text: 'Rank'
                 color: 1, 0, 0, 1
             Label:
-                text: 'Takım'
+                text: 'Team'
                 color: 1, 0, 0, 1
             Label:
-                text: 'G'
+                text: 'W'
                 color: 1, 0, 0, 1
             Label:
-                text: 'M'
+                text: 'L'
                 color: 1, 0, 0, 1
             Label:
-                text: 'Averaj'
-                color: 1, 0, 0, 1
+                text: 'Average'
+                color: 1, 0, 0, 3
             Label:
-                text: 'Puan'
+                text: 'Point'
                 color: 1, 0, 0, 1
         ScrollView:
             do_scroll_y: True
@@ -212,22 +213,22 @@ BoxLayout:
             size_hint_y: None
             height: 28
             Label:
-                text: 'Sıra'
+                text: 'Rank'
                 color: 1, 0, 0, 1
             Label:
-                text: 'Takım'
+                text: 'Team'
                 color: 1, 0, 0, 1
             Label:
-                text: 'G'
+                text: 'W'
                 color: 1, 0, 0, 1
             Label:
-                text: 'M'
+                text: 'L'
                 color: 1, 0, 0, 1
             Label:
-                text: 'B'
+                text: 'D'
                 color: 1, 0, 0, 1
             Label:
-                text: 'Puan'
+                text: 'Point'
                 color: 1, 0, 0, 1
         ScrollView:
             do_scroll_y: True
@@ -278,22 +279,22 @@ BoxLayout:
             size_hint_y: None
             height: 28
             Label:
-                text: 'Sıra'
+                text: 'Rank'
                 color: 1, 0, 0, 1
             Label:
-                text: 'Takım'
+                text: 'Team'
                 color: 1, 0, 0, 1
             Label:
-                text: 'G'
+                text: 'W'
                 color: 1, 0, 0, 1
             Label:
-                text: 'M'
+                text: 'L'
                 color: 1, 0, 0, 1
             Label:
-                text: 'Averaj'
+                text: 'Average'
                 color: 1, 0, 0, 1
             Label:
-                text: 'Puan'
+                text: 'Point'
                 color: 1, 0, 0, 1
         ScrollView:
             do_scroll_y: True
@@ -335,13 +336,13 @@ BoxLayout:
             size_hint_y: None
             height: 28
             Label:
-                text: 'Sıra'
+                text: 'Rank'
                 color: 1, 0, 0, 1
             Label:
-                text: 'Oyuncu'
+                text: 'Player'
                 color: 1, 0, 0, 1
             Label:
-                text: 'Puan'
+                text: 'Point'
                 color: 1, 0, 0, 1
         ScrollView:
             do_scroll_y: True
@@ -405,11 +406,11 @@ class BBData(BoxLayout):
    
 class BBScreen(Screen):
     def on_kv_post(self, base_widget):
-        con = sqlite3.connect('test.db')
-        cur = con.cursor()
-        cur.execute("SELECT * FROM Basketbol ORDER BY sira ASC")
-        table = cur.fetchall()
-        cur.close()
+        with sqlite3.connect(db_path) as db:
+            cur = db.cursor()
+            cur.execute("SELECT * FROM Basketbol ORDER BY sira ASC")
+            table = cur.fetchall()
+            cur.close()
 
         for line in table:
 
@@ -428,11 +429,11 @@ class FBData(BoxLayout):
 
 class FBScreen(Screen):
     def on_kv_post(self, base_widget):
-        con = sqlite3.connect('test.db')
-        cur = con.cursor()
-        cur.execute("SELECT * FROM Futbol ORDER BY sira ASC")
-        table = cur.fetchall()
-        cur.close()
+        with sqlite3.connect(db_path) as db:
+            cur = db.cursor()
+            cur.execute("SELECT * FROM Futbol ORDER BY sira ASC")
+            table = cur.fetchall()
+            cur.close()
 
         for line in table:
 
@@ -450,11 +451,11 @@ class VBData(BoxLayout):
    
 class VBScreen(Screen):
     def on_kv_post(self, base_widget):
-        con = sqlite3.connect('test.db')
-        cur = con.cursor()
-        cur.execute("SELECT * FROM Voleybol ORDER BY sira ASC")
-        table = cur.fetchall()
-        cur.close()
+        with sqlite3.connect(db_path) as db:
+            cur = db.cursor()
+            cur.execute("SELECT * FROM Voleybol ORDER BY sira ASC")
+            table = cur.fetchall()
+            cur.close()
 
         for line in table:
 
@@ -469,11 +470,11 @@ class TData(BoxLayout):
 
 class TScreen(Screen):
     def on_kv_post(self, base_widget):
-        con = sqlite3.connect('test.db')
-        cur = con.cursor()
-        cur.execute("SELECT * FROM Tenis ORDER BY sira ASC")
-        table = cur.fetchall()
-        cur.close()
+        with sqlite3.connect(db_path) as db:
+            cur = db.cursor()
+            cur.execute("SELECT * FROM Tenis ORDER BY sira ASC")
+            table = cur.fetchall()
+            cur.close()
 
         for line in table:
 
@@ -489,11 +490,11 @@ class InfoCard(MDCard):
 class NScreen(Screen):
 
     def set_title(self):
-        con = sqlite3.connect('test.db')
-        cur = con.cursor()
-        cur.execute("SELECT * FROM Haberler")
-        table = cur.fetchall()
-        cur.close()
+        with sqlite3.connect(db_path) as db:
+            cur = db.cursor()
+            cur.execute("SELECT * FROM Haberler")
+            table = cur.fetchall()
+            cur.close()
 
         for line in table:
             id, baslik, icerik = line
